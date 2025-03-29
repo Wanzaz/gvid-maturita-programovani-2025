@@ -26,7 +26,7 @@ void vypis2DPole(int n, int m, int pole[n][m])
 // vytvoř transponovanou matici - in place
 void transponuj(int n, int m, int pole[n][m]) {
     for (int i = 0; i < n; i++) {
-        for (int j = i + 1; j < m; j++) {
+        for (int j = i + 1; j < m; j++) { // POZOR j = i + 1;
             int tmp = pole[i][j];
             pole[i][j] = pole[j][i];
             pole[j][i] = tmp;
