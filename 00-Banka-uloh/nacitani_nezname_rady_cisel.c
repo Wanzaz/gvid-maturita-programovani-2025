@@ -3,8 +3,7 @@
 
 
 // čti ze vstupu řadu číselných hodnot předem neznámé délky (až do konce vstupu – EOF) a vypiš posledních N hodnot, součet posledních N hodnot, vypiš posledních N hodnot v opačném pořadí
-// TODO: - udelat dynamicky
-//       - kontrolovat jestli n < delka
+
 
 int nacitaniZeSouboruDelka(FILE* f, int pole[])
 {
