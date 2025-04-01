@@ -34,6 +34,7 @@ void vypisMatici(FILE *f, TMatice m)
     }
 }
 
+// zjisti počet sudých prvků v každém sloupci a zapiš jej do posledního řádku v tomto sloupci
 void pocetSudychVeSloupci(TMatice* m)
 {
     int counter = 0;
@@ -47,6 +48,7 @@ void pocetSudychVeSloupci(TMatice* m)
         counter = 0;
     }
 }
+
 
 int main(int argc, char *argv[])
 {
