@@ -7,7 +7,7 @@ typedef struct _retezec {
     char znak[N];
 } TRetezec;
 
-// Nacti retezec ze vstupu (maximalne N znaku)
+// Vrat pocet cislic v retezci
 
 
 void nactiRetezec(FILE *f, TRetezec *r) {
@@ -26,6 +26,21 @@ void vytiskniRetezec(FILE *f, TRetezec r) {
     fprintf(f, "%s\n", r.znak);
 }
 
+
+int pocetCiselVRetezci(TRetezec r)
+{
+    int pocet = 0;
+    
+    for (int i = 0; r.znak[i] != '\0'; i++) {
+        if (r.znak[i] >= '0' && r.znak[i] <= '9') {
+            pocet++;
+        }
+    }
+
+
+    return pocet;
+}
+
 int main() {
     TRetezec r1;
 
@@ -33,6 +48,9 @@ int main() {
     nactiRetezec(stdin, &r1);
     vytiskniRetezec(stdout, r1);
 
+    printf("Pocet znaku v retezci: %d\n", pocetCiselVRetezci(r1));
+
     return 0;
 }
+
 
