@@ -3,17 +3,17 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define MAX_SOPEK 100
-#define MAX_ZNAKU 20
+#define START_CAPACITY 10
 
 typedef struct _sopka {
-    char nazev[MAX_ZNAKU];
+    char nazev[START_CAPACITY];
     int vyska;
     bool aktivni;
 } TSopka;
 
 typedef struct _sopky {
     int pocet;
+    int kapacita;
     TSopka *prvek;  // Dynamicky alokované pole
 } TSopky;
 
@@ -27,33 +27,32 @@ typedef struct _sopky {
 void nactiSopkyZeSouboru(FILE *f, TSopky *s)
 {
     char status[4];
-    int i = 0;
-    
-    s->prvek = malloc(sizeof(TSopka) * MAX_SOPEK);
+    s->pocet = 0;
+    s->kapacita = START_CAPACITY;
+
+    s->prvek = malloc(sizeof(TSopka) * s->kapacita);
     if (s->prvek == NULL) {
         printf("Chyba při alokaci paměti!\n");
         exit(-1);
     }
 
-    while (fscanf(f, "%19s %d %3s", s->prvek[i].nazev, &s->prvek[i].vyska, status) == 3) {
-        s->prvek[i].aktivni = (strcmp(status, "ano") == 0);
-        i++;
+    while (fscanf(f, "%19s %d %3s", s->prvek[s->pocet].nazev, &s->prvek[s->pocet].vyska, status) == 3) {
+        s->prvek[s->pocet].aktivni = (strcmp(status, "ano") == 0);
+        s->pocet++;
 
-        if (i % 10 == 0) {  // Každých 10 sopek přidáme další blok
-            s->prvek = realloc(s->prvek, sizeof(TSopka) * (i + 10));
-            if (s->prvek == NULL) {
+        // Pokud dojdeme na konec alokovaného prostoru, zvětšíme ho
+        if (s->pocet >= s->kapacita) {
+            int new_size = s->kapacita * 2;  // Zdvojnásobíme velikost pole
+            TSopka *temp = realloc(s->prvek, sizeof(TSopka) * new_size);
+            if (temp == NULL) {
                 printf("Chyba při realokaci paměti!\n");
+                free(s->prvek);
                 exit(-1);
             }
-        }
-
-        if (i >= MAX_SOPEK) {
-            printf("Pocet sopek ve souboru presahl limit %d, dalsi sopky budou ignorovány.\n", MAX_SOPEK);
-            break;
+            s->prvek = temp;
+            s->kapacita = new_size;
         }
     }
-
-    s->pocet = i;
 }
 
 void vytiskniSopky(FILE *f, TSopky s)
@@ -179,16 +178,13 @@ int main(int argc, char *argv[])
     scanf("%19s", cesta3);
 
     FILE *aktivni = fopen(cesta2, "w");
-    if (aktivni == NULL) {
+    FILE *neaktivni = fopen(cesta3, "w");
+    if (neaktivni == NULL || aktivni == NULL) {
         printf("Nepodarilo se soubor otevrit\n");
+        free(s.prvek);
         return -1;
     }
 
-    FILE *neaktivni = fopen(cesta3, "w");
-    if (vystup == NULL) {
-        printf("Nepodarilo se soubor otevrit\n");
-        return -1;
-    }
     zapisovaniDoSouboruAKNEK(aktivni, neaktivni, s);
 
 
