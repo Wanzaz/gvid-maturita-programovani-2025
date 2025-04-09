@@ -31,6 +31,7 @@ HexResult hexToDec(const char* hexStr) {
 
     return result;
 }
+// Hornerovo Schema - 
 
 // Funkce pro zpracování vstupu a výstup výsledků
 void nacitej(TRetezec *r) {

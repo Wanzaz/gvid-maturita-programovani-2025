@@ -27,6 +27,9 @@ void vytiskniRetezec(FILE *f, TRetezec r) {
     fprintf(f, "%s\n", r.znak);
 }
 
+
+// FSCANF - SSCANF
+
 // vrat pocet slov v retezci
 int  pocetSlovVRetezci(TRetezec r)
 {

@@ -21,6 +21,7 @@ typedef struct _sopky {
 // Počet uložených záznamů není předem znám. Názvy souborů musí zadávat uživatel (dotazem nebo přes parametry příkazového řádku).
 
 
+// Rovnou hledat v nacitani
 
 
 

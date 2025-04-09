@@ -44,8 +44,13 @@ void nactiRetezec(FILE *f, TRetezec *r)
     }
 }
 
+
+// h['a'] = 0
+// h[z] += 1
+// h[256]
+
 // vytvoř histogram a vypiš četnosti malých písmen
-void vytvorAHistogram(TRetezec *r)
+void vytvorHistogram(TRetezec *r)
 {
     int histogram[26] = {0};
 
@@ -73,7 +78,7 @@ int main(int argc, char *argv[])
 
     printf("Zadej text :\n");
     nactiRetezec(stdin, &r);
-    vytvorAHistogram(&r);
+    vytvorHistogram(&r);
 
     // Uklidit alokovanou paměť
     free(r.znak);

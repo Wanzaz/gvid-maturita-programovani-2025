@@ -4,13 +4,14 @@
 // Vytvoř podprogram, který zapíše zadanou hodnotu na výstup ve zvolené číselné soustavě. Základ číselné soustavy a hodnota budou parametry podprogramu
 // a zjisti je od uživatele. Počítej se základy od 2 do 36.
 
+// nejdriv vyhodnotit hornernem -> pak vydelit -> otocit
 
 #define DIGITS "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 typedef struct _parametry {
     int zakladSoustavy;
     int hodnota;
-    char vysledek[100];
+    char vysledek[64];
 } Tparametry;
 
 // Funkce pro převod čísla z desítkové do libovolné soustavy (2–36)
