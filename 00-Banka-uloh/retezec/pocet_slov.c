@@ -30,7 +30,7 @@ void vytiskniRetezec(FILE *f, TRetezec r) {
 
 // FSCANF - SSCANF
 
-// vrat pocet slov v retezci
+// vrat pocet slov v retezci - PRVNI MYSLENKA
 int  pocetSlovVRetezci(TRetezec r)
 {
     int pocet = 0;
@@ -43,7 +43,7 @@ int  pocetSlovVRetezci(TRetezec r)
     return pocet;
 }
 
-// Vrátí počet slov v řetězci
+// Vrátí počet slov v řetězci - LEPSI VARIANTA
 int pocetSlovVRetezci1(TRetezec r) {
     int pocet = 0;
     bool veSlove = false;
@@ -73,7 +73,7 @@ int main() {
     vytiskniRetezec(stdout, r);
 
 
-    printf("Pocet slov v retezci: %d\n", pocetSlovVRetezci(r));
+    printf("Pocet slov v retezci: %d\n", pocetSlovVRetezci1(r));
 
     
 
