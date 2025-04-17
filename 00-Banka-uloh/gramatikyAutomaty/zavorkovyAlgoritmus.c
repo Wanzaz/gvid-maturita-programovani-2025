@@ -11,36 +11,22 @@
 
 
 // Vytvoření logické funkce, která zjistí, zda jsou závorky správně uzavřeny a zanořeny.
-enum Estavy {TEXT, KOMENTAR};
-
 bool spravneUzavreneHranateZavorky() {
-    // Proměnná pro uchování vstupních znaků
     int znak;
-    // Stavová proměnná pro kontrolu párování závorek
-    enum Estavy stav = TEXT;
+    int hloubka = 0;
 
-    while ((znak = getchar()) != EOF) { // Čteme až do konce vstupu
-        switch (stav) {
-            case TEXT:
-                if (znak == '[') { 
-                    stav = KOMENTAR;  // Přepneme do stavu KOMENTAR, kde očekáváme uzavření
-                }
-                break;
-
-            case KOMENTAR:
-                if (znak == ']') {
-                    stav = TEXT;  // Po uzavření závorky přecházíme zpět do stavu TEXT
-                }
-                break;
+    while ((znak = getchar()) != EOF && znak != '\n') {
+        if (znak == '[') {
+            hloubka++;
+        } else if (znak == ']') {
+            hloubka--;
+            if (hloubka < 0) {
+                return false; // více pravých než levých závorek
+            }
         }
     }
 
-    // Pokud máme stále otevřené závorky, znamená to, že nebyly správně uzavřeny
-    if (stav != TEXT) {
-        return false;
-    }
-
-    return true;
+    return hloubka == 0; // všechny závorky musí být uzavřené
 }
 
 int main() {
