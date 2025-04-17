@@ -1,24 +1,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
 // čti ze vstupu řadu číselných hodnot předem neznámé délky (až do konce vstupu – EOF) a vypiš posledních N hodnot, součet posledních N hodnot, vypiš posledních N hodnot v opačném pořadí
 
+
+#define UINT unsigned int
 #define N 5
 
-
-// Kruhovy seznam, princip kruhove indexace
-int modulo(int x, int n)
-{
-    int m = x % n;
-    if (m < 0) {
-        return (n < 0) ? m - n : m + n; // n < 0 vzacny pripad
-    }
-
-    return m;
+// Funkce pro kruhové indexování
+UINT modulo(UINT x, UINT n) {
+    return x % n;
 }
 
-int nactiZeSouboru(FILE *f, int buffer[]) {
-    int pocetNactenych = 0;
+UINT nactiZeSouboru(FILE *f, int buffer[]) {
+    UINT pocetNactenych = 0;
     int num;
 
     while (fscanf(f, "%d", &num) == 1) {
@@ -30,30 +26,26 @@ int nactiZeSouboru(FILE *f, int buffer[]) {
 }
 
 // Vypisuje posledních N hodnot
-void vypisPoslednichNHodnot(FILE *f, int buffer[], int pocetNactenych, int pocetPoslednich) {
-    int idx;
-    for (int i = 0; i < pocetPoslednich; i++) {
-        idx = modulo(pocetNactenych - pocetPoslednich + i, N);
+void vypisPoslednichNHodnot(FILE *f, int buffer[], UINT pocetNactenych, UINT pocetPoslednich) {
+    for (UINT i = 0; i < pocetPoslednich; i++) {
+        UINT idx = modulo(pocetNactenych - pocetPoslednich + i, N);
         fprintf(f, "%d ", buffer[idx]);
     }
 }
 
 // Vypisuje posledních N hodnot v opačném pořadí
-void vypisPoslednichNHodnotObracene(FILE *f, int buffer[], int pocetNactenych, int pocetPoslednich) {
-    int idx;
-    for (int i = pocetPoslednich - 1; i >= 0; i--) {
-        idx = modulo(pocetNactenych - pocetPoslednich + i, N);
+void vypisPoslednichNHodnotObracene(FILE *f, int buffer[], UINT pocetNactenych, UINT pocetPoslednich) {
+    for (UINT i = 0; i < pocetPoslednich; i++) {
+        UINT idx = modulo(pocetNactenych - i - 1, N);
         fprintf(f, "%d ", buffer[idx]);
     }
 }
 
 // Počítá součet posledních N hodnot
-int soucetPoslednichNHodnot(int buffer[], int pocetNactenych, int pocetPoslednich) {
-    int idx;
+int soucetPoslednichNHodnot(int buffer[], UINT pocetNactenych, UINT pocetPoslednich) {
     int sum = 0;
-
-    for (int i = 0; i < pocetPoslednich; i++) {
-        idx = modulo(pocetNactenych - pocetPoslednich + i, N);
+    for (UINT i = 0; i < pocetPoslednich; i++) {
+        UINT idx = modulo(pocetNactenych - pocetPoslednich + i, N);
         sum += buffer[idx];
     }
 
@@ -67,9 +59,8 @@ int main() {
         return -1;
     }
 
-    int buffer[N] = {0}; // Cyklující buffer
-    int pocetNactenych = nactiZeSouboru(f, buffer);
-
+    int buffer[N] = {0};
+    UINT pocetNactenych = nactiZeSouboru(f, buffer);
     fclose(f);
 
     if (pocetNactenych == 0) {
@@ -77,15 +68,17 @@ int main() {
         return 0;
     }
 
-    printf("Posledních %d hodnot: ", N);
-    vypisPoslednichNHodnot(stdout, buffer, pocetNactenych, N);
+    UINT pocetKZobrazeni = (pocetNactenych < N) ? pocetNactenych : N;
+
+    printf("Posledních %u hodnot: ", pocetKZobrazeni);
+    vypisPoslednichNHodnot(stdout, buffer, pocetNactenych, pocetKZobrazeni);
     printf("\n");
 
-    printf("Posledních %d hodnot obráceně: ", N);
-    vypisPoslednichNHodnotObracene(stdout, buffer, pocetNactenych, N);
+    printf("Posledních %u hodnot obráceně: ", pocetKZobrazeni);
+    vypisPoslednichNHodnotObracene(stdout, buffer, pocetNactenych, pocetKZobrazeni);
     printf("\n");
 
-    printf("Součet posledních %d hodnot: %d\n", N, soucetPoslednichNHodnot(buffer, pocetNactenych, N));
+    printf("Součet posledních %u hodnot: %d\n", pocetKZobrazeni, soucetPoslednichNHodnot(buffer, pocetNactenych, pocetKZobrazeni));
 
     return 0;
 }
