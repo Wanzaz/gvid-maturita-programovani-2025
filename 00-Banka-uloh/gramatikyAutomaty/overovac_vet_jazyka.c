@@ -12,15 +12,51 @@ typedef struct {
 
 
 
-int overeniVetJazyka(TRetezec mnozinaZnaku, TRetezec r)
+// Majkluv zpusob: 
+bool jeVPoli1(char pole[], int pocet, char znak)
+{
+    for (int i = 0; i < pocet; i++) {
+        if (pole[i] == znak) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+int jeVeta(char sigma[], int pocetZnaku, FILE* vstup, char konec)
+{
+    char c;
+    int i = 0;
+    while ((c = fgetc(vstup)) != konec) {
+        if (!jeVPoli1(sigma, pocetZnaku, c)) {
+            return i;
+        }
+        i++;
+    }
+
+    return -1;
+}
+// :Majkluv zpusob
+
+bool jeVPoli(TRetezec pole, char znak)
+{
+    for (int i = 0; i < N; i++) {
+        if (pole.znak[i] == znak) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+int overeniVetJazyka(TRetezec sigma, TRetezec r)
 {
     bool nalezen;
     for (int i = 0; r.znak[i] != '\0'; i++) {
         nalezen = false;
-        for (int j = 0 ; mnozinaZnaku.znak[j] != '\0'; j++) {
-            if (r.znak[i] == mnozinaZnaku.znak[j]) { // || r.znak[i] == ' '
-                nalezen = true;
-            }
+        if (jeVPoli(sigma, r.znak[i])) {
+            nalezen = true;
         }
 
         if (!nalezen) {
