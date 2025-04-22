@@ -46,7 +46,7 @@ void selectionSort(Tpole* p)
  * Sequencity = YES
  * */
 void insertionSort(Tpole* p) {
-    for (int d = 1; d < p->delka - 1; d++) {
+    for (int d = 1; d < p->delka; d++) {
         float vkladany = p->prvek[d]; // odlozeni vkladaneho
         int i = d; // i je index hledane pozice
 
