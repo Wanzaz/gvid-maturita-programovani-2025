@@ -59,8 +59,8 @@ void insertionSort(Tpole* p) {
 }
 
 
-void insertionSortSeZarazkouNaKonci(Tpole *p) { // n o 1 vetsi !!!!
-    for (int d = p->delka - 2; d > 0; d--) { // ted jdeme odzadu
+void insertionSortSeZarazkouNaKonci(Tpole *p) { // n o 1 vetsi !!!! - ALE plati jen pro inicializaci, zde predavame stejnou delku
+    for (int d = p->delka - 2; d >= 0; d--) { // ted jdeme odzadu
         p->prvek[p->delka] = p->prvek[d]; // zarazka
         int i = d; // i je index hledane pozice
 
