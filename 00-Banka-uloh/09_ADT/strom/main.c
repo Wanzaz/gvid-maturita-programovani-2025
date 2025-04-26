@@ -187,7 +187,7 @@ bool _bvsVloz(Tuzel **u, int klic, float data)
     }
     // nevkladame nahodou duplicitni klic? ne nevkladamae protoze tady si
     // na duplicitni klice nehrajeme
-    //if (klic == pom->klic) return false
+    if (klic == pom->klic) return false;
     
     // patri v levo nebo pravo
     /* if (klic < pom->klic) { */
@@ -217,18 +217,12 @@ bool _zrusVybranyList(Tuzel **u, int klic)
 
     Tuzel *pom = *u;
 
-    if (pom->klic == klic)
-    {
-        // Ověření, že to je list
-        if (pom->levy == NULL && pom->pravy == NULL)
-        {
+    if (pom->klic == klic) {
+        if (pom->levy == NULL && pom->pravy == NULL) {
             free(pom);
             *u = NULL;
             return true;
-        }
-        else
-        {
-            // Pokud to není list, nemůžeme mazat
+        } else {
             return false;
         }
     }

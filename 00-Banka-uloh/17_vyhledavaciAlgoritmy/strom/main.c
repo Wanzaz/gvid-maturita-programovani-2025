@@ -209,7 +209,6 @@ bool bvsVloz(Tstrom *strom, int klic, float data)
     }
     return false;
 }
-
 /* zrušení (vybraného) listu */
 bool _zrusVybranyList(Tuzel **u, int klic)
 {
@@ -217,25 +216,18 @@ bool _zrusVybranyList(Tuzel **u, int klic)
 
     Tuzel *pom = *u;
 
-    if (pom->klic == klic)
-    {
-        // Ověření, že to je list
-        if (pom->levy == NULL && pom->pravy == NULL)
-        {
+    if (pom->klic == klic) {
+        if (pom->levy == NULL && pom->pravy == NULL) {
             free(pom);
             *u = NULL;
             return true;
-        }
-        else
-        {
-            // Pokud to není list, nemůžeme mazat
+        } else {
             return false;
         }
     }
 
     return _zrusVybranyList(klic < pom->klic ? &pom->levy : &pom->pravy, klic);
 }
-
 
 bool zrusVybranyList(Tstrom *strom, int klic)
 {
