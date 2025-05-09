@@ -23,15 +23,14 @@ void vypisEmailProJmeno(const char *jmeno_k_vyhledani, FILE *f_uzivatelu, FILE *
 
     while (fscanf(f_uzivatelu, "%d %10s", &uzivatel.id, uzivatel.jmeno) == 2) {
         if (strcmp(uzivatel.jmeno, jmeno_k_vyhledani) == 0) {
-            break;
+            while (fscanf(f_emailu, "%d %20s", &email_zaznam.id_uzivatele, email_zaznam.email) == 2) {
+                if (email_zaznam.id_uzivatele == uzivatel.id) {
+                    printf("%d %s %s\n", uzivatel.id, uzivatel.jmeno, email_zaznam.email);
+                }
+            }
         }
     }
 
-    while (fscanf(f_emailu, "%d %20s", &email_zaznam.id_uzivatele, email_zaznam.email) == 2) {
-        if (email_zaznam.id_uzivatele == uzivatel.id) {
-            printf("%d %s %s\n", uzivatel.id, uzivatel.jmeno, email_zaznam.email);
-        }
-    }
 }
 
 int main() {
