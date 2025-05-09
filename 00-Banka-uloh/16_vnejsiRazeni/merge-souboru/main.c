@@ -2,6 +2,11 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+/**
+• Dva vstupní soubory obsahují seřazené posloupnosti znaků. Sluč je do třetího vý-
+stupního souboru tak, aby v něm byly všechny znaky také seřazeny.
+**/
+
 bool readChar(FILE *file, char *ch) {
     return fscanf(file, "%c", ch) == 1;
 }
