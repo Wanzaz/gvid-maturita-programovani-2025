@@ -1,0 +1,4 @@
+1 email@cz.c
+2 ahoj@cz.c
+3 casu&%.c
+3 ahoj&%.c
