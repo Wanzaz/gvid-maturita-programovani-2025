@@ -78,7 +78,7 @@ bool jeDDM(Tmatice *m)
             }
         }
 
-        if (fabs(m->prvek[r][r]) < sum) {
+        if (fabs(m->prvek[r][r]) <= sum) {
             return false;
         }
     }

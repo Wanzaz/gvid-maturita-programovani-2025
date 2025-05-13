@@ -228,6 +228,33 @@ static inline
         temp_array[temp++] = array[right++];
     }
 }
+/**
+void merge(int array[], int temp_array[], int start, int middle, int end) {
+    int i = start;
+    int j = middle;
+    int k = start;
+    while (i < middle && j < end) {
+        if (array[i] <= array[j]) {
+            temp_array[k] = array[i];
+            i++;
+        } else {
+            temp_array[k] = array[j];
+            j++;
+        }
+        k++;
+    }
+
+    while (i < middle) {
+        temp_array[k++] = array[i];
+        i++;
+    }
+
+    while (j < middle) {
+        temp_array[k++] = array[i];
+        j++;
+    }
+}
+**/
 
 void copyPartOfArray(float array[], float temp_array[], int start, int end) {
     for (int index = start; index <= end; index++) {
