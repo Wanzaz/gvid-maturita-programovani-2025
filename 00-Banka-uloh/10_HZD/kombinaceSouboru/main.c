@@ -28,39 +28,29 @@ stupního souboru zapisovat střídavě vždy jeden řádek z prvního a pak ze 
 ho souboru.
 **/
 
-void kombinujSoubory(FILE *in1, FILE *in2, FILE *out)
-{
-    char *radek1 = NULL;
-    size_t len1 = 0;
-    ssize_t nread1;
-
-    char *radek2 = NULL;
-    size_t len2 = 0;
-    ssize_t nread2;
+void kombinujSoubory(FILE *in1, FILE *in2, FILE *out) {
+    char radek1[1024];
+    char radek2[1024];
+    int c;
 
     while (1) {
-        // Pokusíme se přečíst řádek z prvního souboru
-        nread1 = getline(&radek1, &len1, in1);
-        if (nread1 > 0) {
+        int nacetl1 = 0, nacetl2 = 0;
+
+        if (fgets(radek1, sizeof(radek1), in1)) {
             fputs(radek1, out);
+            nacetl1 = 1;
         }
 
-        // Pokusíme se přečíst řádek z druhého souboru
-        nread2 = getline(&radek2, &len2, in2);
-        if (nread2 > 0) {
+        if (fgets(radek2, sizeof(radek2), in2)) {
             fputs(radek2, out);
+            nacetl2 = 1;
         }
 
-        // Pokud jsme dosáhli konce obou souborů, ukončíme smyčku
-        if (nread1 <= 0 && nread2 <= 0) {
+        if (!nacetl1 && !nacetl2) {
             break;
         }
     }
-
-    if (radek1) free(radek1);
-    if (radek2) free(radek2);
 }
-
 
 int main()
 {
