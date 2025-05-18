@@ -68,7 +68,7 @@ a zjisti je od uživatele. Počítej se základy od 2 do 36.
 **/
 bool prevedDoSoustavy(int cislo, int soustava, char vystup[], int max)
 {
-    if (soustava < 2 && soustava > 36) {
+    if (soustava < 2 || soustava > 36) {
         return false;
     }
 
