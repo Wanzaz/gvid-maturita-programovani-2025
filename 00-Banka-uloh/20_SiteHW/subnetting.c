@@ -20,5 +20,5 @@ int main(void)
     unsigned char* subnet = (unsigned char*) &result;
 
 
-    printf("%i", subnet[3]);
+    printf("%i.%i.%i.%i\n", subnet[0], subnet[1], subnet[2], subnet[3]);
 }

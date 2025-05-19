@@ -30,168 +30,6 @@ enum gemErrors {
 
 
 
-/** \brief Otestuje operace maticeAlokuj, maticeRandom a maticeTiskni. */
-void testInit(void)
-{
-  printf("==========================================\n");
-  printf("Test vytvoreni a inicializace matice\n");
-  Tmatice * matice = maticeAlokuj(50000000, 30000000);
-//  Tmatice * matice = maticeAlokuj(5, 3);
-//  maticeNastavPrvky(matice, 1.2);
-  if (matice == NULL)
-  { // Matici se nepovedlo vytvořit, tak vytisknu proč a skončím.
-    maticeAktualniChyboveHlaseni(stderr);
-    return;
-  }
-  maticeRandom(matice);
-  maticeTiskni(matice);
-
-  maticeUvolni(matice);
-
-  printf("==========================================\n");
-}
-
-
-
-
-
-
-/** \brief Otestuje funkce pro čtení ze a zápis do souboru.
- *
- * \param input char*   Jméno vstupního souboru nebo NULL
- * \param output char*  Jméno výstupního souboru nebo NULL
- * \return int Vrací EXIT_FAILURE v případě chyby při práci se soubory.
- *
- * <p>Pokud je místo jména vstupního nebo výstupního souboru prázdný ukazatel
- * NULL, použije se soubor stdin nebo stdout.</p>
- *
- */
-void testFileRW(char *input, char *output)
-{
-  printf("==========================================\n");
-  printf("Test cteni a zapisu ze a do souboru\n");
-  FILE *fin = stdin;
-  FILE *fout = stdout;
-
-  if (input != NULL)
-    fin = fopen(input, "r");
-
-  if (output != NULL)
-    fout = fopen(output, "w");
-
-  if (fin == NULL)
-  {
-    fprintf(stderr, "Chybny nazev vstupniho souboru.");
-    fin = stdin;
-    input = NULL;
-  }
-
-  if (fout == NULL)
-  {
-    fprintf(stderr, "Chybny nazev vystupniho souboru.");
-    fout = stdout;
-    output = NULL;
-  }
-
-  // Tady teď není potřeba volat funkci maticeAlokuj, protože to se už dělá
-  // uvnitř funkce maticeCtiZeSouboru.
-  Tmatice * m = maticeCtiZeSouboru(fin);
-  if (m != NULL)
-  { // Není chyba => zpracuji načtenou matici.
-    maticeTiskniSoubor(fout, m);
-    maticeUvolni(m);
-  }
-  else
-  { // Při chybě tisknu chybové hlášení, zavřu soubory a končím.
-    maticeAktualniChyboveHlaseni(stderr);
-  }
-
-  if (input != NULL) fclose(fin);
-  if (output != NULL) fclose(fout);
-  printf("==========================================\n");
-  return;
-}
-
-
-/** \brief Vynásobí dvě matice a výsledek uloží do třetí nové matice.
- *
- * \param a const Tmatice* První vstupní matice.
- * \param b const Tmatice* Druhá vstupní matice.
- * \param c Tmatice* Výsledná, zatím nevytvořená matice.
- * \return bool Vrací true, pokud se operace povedla, jinak false.
- *
- * <p>Parametr c musí ukazovat na prozatím nevytvořenou matici, jinak dojde ke
- * ztrátě dat.</p>
- *
- * <p>Pokud jsou vstupní matice kompatibilní, tj. a->sloupcu == b->radku, dojde
- * k vytvoření výsledné matice o rozměrech c->radku = a-radku a c->sloupcu = b->sloupcu.
- * Do této matice pak bude uložen výsledek násobení a*b v tomto pořadí.</p>
- *
- * <p>Pozor! Operace maticového násobení není komutativní, tudíž záleží na
- * pořadí operandů.</p>
- */
-Tmatice * maticeMult(const Tmatice *a, const Tmatice *b)
-{
-  if (a->sloupcu != b->radku)
-    return NULL;
-
-  Tmatice * c = maticeAlokuj(a->radku, b->sloupcu);
-  if (c == NULL)
-    return NULL;
-
-  for (int row = 0; row < c->radku ; ++row)
-  {
-    for (int col = 0; col < c->sloupcu ; ++col)
-    {
-      double ssum;
-      ssum = 0.0;
-      for (int k = 0; k < a->sloupcu ; ++k)
-      {
-        ssum += a->prvek[row][k] * b->prvek[k][col];
-      }
-      c->prvek[row][col] = ssum;
-    }
-  }
-  return c;
-
-//  Poznámka: Všimni si, že operace se sama stará o alokaci výsledku a ošetření
-//  chyb, které to může generovat. Jako autor takové operace nemůžu chtít po
-//  uživateli (této funkce), aby před samotným spuštěním funkce prováděl nějaké
-//  kroky nutné pro správné chování této funkce. Programy, které toto vyžadují,
-//  jsou takzvaně "křehké", což je protiklad k programům "robustním".
-}
-
-/** \brief Test operací maticeRandom a maticeMult. */
-void testMult(void)
-{
-  printf("==========================================\n");
-  printf("Test nasobeni nahodnych matic\n");
-  Tmatice * a = maticeAlokuj(4, 2);
-  Tmatice * b = maticeAlokuj(2, 3);
-
-  maticeRandom(a);
-  maticeRandom(b);
-
-  maticeTiskni(a);
-  printf("*\n");
-  maticeTiskni(b);
-  printf("=\n");
-  Tmatice * c = maticeMult(a, b);
-  if (c != NULL)
-  {
-    maticeTiskni(c);
-    maticeUvolni(c);
-  }
-  else
-    printf("Tohle nejde!\n");
-
-  maticeUvolni(a);
-  maticeUvolni(b);
-  printf("==========================================\n");
-}
-
-
-
 
 /** \brief Vrátí index řádku s pivotem.
  *
@@ -205,8 +43,8 @@ void testMult(void)
 int maxAbsPivot(Tmatice *m, int r)
 {
     int maxi = r;
-    for (int radek = r + 1; radek <= m->radku - 1; ++radek) {
-        if (fabs(m->prvek[radek][r]) > fabs(m->prvek[maxi][r])) {
+    for (int radek = r + 1; radek <= m->radku; radek++) {
+        if (abs(m->prvek[radek][r]) > abs(m->prvek[maxi][r])) {
             maxi = radek;
         }
     }
@@ -223,21 +61,17 @@ int maxAbsPivot(Tmatice *m, int r)
  */
 bool jeHorni(Tmatice *m)
 {
-    // Procházíme všechny řádky
-    for (int radek = 0; radek < m->radku - 1; ++radek) {
-        // Kontrola diagonálního prvku
-        if (m->prvek[radek][radek] == 0.0 ) {
-            return false;  // Pokud je jakýkoli diagonální prvek 0, vrátíme false
+    for (int r = 0; r < m->radku; r++) {
+        if (m->prvek[r][r] == 0.0) {
+            return false;
         }
-        // Procházíme prvky pod diagonálou
-        for (int sloupec = 0; sloupec < radek; ++sloupec) {
-            // Pokud najdeme prvek pod diagonálou, který není 0, vrátíme false
-            if (m->prvek[radek][sloupec] != 0.0) {
+        for (int s = 0; s < r; s++) {
+            if (m->prvek[r][s] != 0.0) {
                 return false;
             }
         }
     }
-    // Pokud jsou všechny podmínky splněny, matice je horní trojúhelníková a diagonální prvky jsou nenulové
+
     return true;
 }
 
@@ -250,17 +84,14 @@ bool jeHorni(Tmatice *m)
  */
 bool jePoGJEM(Tmatice *m)
 {
-    for(int r = 0; r < m->radku; r++)
-    {
-        if (m->prvek[r][r] == 0.0) return false;
-
-        for(int s = 0 ; s < m->sloupcu - 1; s++)
-        {
-            if(r != s && m->prvek[r][s] != 0.0)
-            {
+    for (int r = 0; r < m->radku; r++) {
+        if (m->prvek[r][r] == 0.0) {
+            return false;
+        }
+        for (int s = 0; s < m->radku; s++) {
+            if (r != s && m->prvek[r][s] != 0.0) {
                 return false;
             }
-
         }
     }
 
@@ -276,13 +107,11 @@ bool jePoGJEM(Tmatice *m)
  */
 void radkoveUpravy(Tmatice *m, int r)
 {
-    for (int radek = r + 1; radek < m->radku; ++radek) {
-        float koeficient = m->prvek[radek][r] / m->prvek[r][r]; // koeficient pro úpravu řádku
-        m->prvek[radek][r] = 0.0;  // Nulování prvků pod diagonálním prvkem
-
-        // Úprava zbývajících sloupců
-        for (int sloupec = r + 1; sloupec < m->sloupcu; ++sloupec) {
-            m->prvek[radek][sloupec] = m->prvek[r][sloupec] * koeficient - m->prvek[radek][sloupec];
+    for (int radek = r + 1; radek < m->radku; radek++) {
+        float c = m->prvek[radek][r] / m->prvek[r][r];
+        m->prvek[radek][r] = 0.0;
+        for (int s = r + 1; s < m->sloupcu; s++) {
+            m->prvek[radek][s] = m->prvek[radek][s] - c * m->prvek[r][s];
         }
     }
 }
@@ -302,21 +131,6 @@ void radkoveUpravy(Tmatice *m, int r)
  */
 int gemPrimy(Tmatice *m)
 {
-    for (int r = 0; r < m->radku; ++r) { // Jedu do radku n - 2
-
-        int p = maxAbsPivot(m, r); // index pivota
-        if (m->prvek[p][r] == 0.0) { // 0 nesmí být na diagonále
-            return CHYBA_RESENI;
-        }
-
-        if (r != p) { // aby se neměnily stejné řádky..
-            maticeVymenRadky(m, r, p);
-        }
-
-        radkoveUpravy(m, r);
-    }
-
-    return OK;
 }
 
 /**
@@ -328,40 +142,19 @@ int gemPrimy(Tmatice *m)
  */
 void radkoveUpravyJordan(Tmatice *m, int r)
 {
-    // Jeden for cyklus pro úpravu všech řádků nad i pod r-tým řádkem
     for (int radek = 0; radek < m->radku; radek++) {
-        if (radek == r) { // Přeskočíme úpravu diagonálního řádku
-            continue;
-        }
-
-        float konstanta = m->prvek[radek][r] / m->prvek[r][r];
-        m->prvek[radek][r] = 0.0; // Nastavíme nulu v aktuálním sloupci
-
-        // Druhý for cyklus pro úpravu všech sloupců
+        if (radek = r) { continue; }
+        
+        float c = m->prvek[radek][r] / m->prvek[r][r];
+        m->prvek[radek][r] = 0.0;
         for (int s = r + 1; s < m->sloupcu; s++) {
-            m->prvek[radek][s] = m->prvek[radek][s] - konstanta * m->prvek[r][s];
+            m->prvek[radek][s] = m->prvek[radek][s] - c * m->prvek[r][s];
         }
     }
 }
 
 void radkoveUpravyJordan2(Tmatice *m,int r)
 {
-    for(int i = r+1; i<m->radku;i++)
-    {
-        float konstanta = m->prvek[i][r]/m->prvek[r][r];
-        m->prvek[i][r] = 0.0;
-        for(int s = r+1; s<m->sloupcu;s++)
-        {
-            m->prvek[i][s] = konstanta * m->prvek[r][s] - m->prvek[i][s];
-        }
-    }
-    for(int k =r-1;  k >=0; k--){
-        float c = m->prvek[k][r] / m->prvek[r][r];
-        for(int s = r; s< m->sloupcu; s++){
-            m->prvek[k][s] = m->prvek[k][s] - c * m->prvek[r][s];
-        }
-        m->prvek[k][r] = 0;
-    }
 }
 
 
@@ -378,18 +171,17 @@ void radkoveUpravyJordan2(Tmatice *m,int r)
 int gjemPrimy(Tmatice *m)
 {
     for (int r = 0; r < m->radku; r++) {
-        int pivot = maxAbsPivot(m, r);
-        if (m->prvek[pivot][r] == 0) {
-            return CHYBA_RESENI;
+        int p = maxAbsPivot(m, r);
+
+        if (m->prvek[r][r] == 0.0) { return false; }
+        if (p != r) {
+            prohodRadky(m, p, r);
         }
 
-        if (pivot != r) {
-            maticeVymenRadky(m, pivot, r);
-        }
-
-        radkoveUpravyJordan(m, r);
+        radkoveUpravy(m, r);
     }
-    return OK;
+
+    return true;
 }
 
 
@@ -468,22 +260,6 @@ void testPrimehoChodu(char *jmenoSouboru)
  */
 int gemGjemPoPrimem(Tmatice *m)
 {
-    // Zkontroluj, zda je matice ve tvaru horní trojúhelníkové matice
-    if (m->sloupcu != m->radku + 1 || m->sloupcu < 0 || m->radku < 0 || !jeHorni(m)) {
-        return 0;
-    }
-
-    // Pokud poslední prvek před pravou stranou není nulový, soustava má jedno řešení
-    if (m->prvek[m->radku - 1][m->sloupcu - 2] != 0) {
-        return 1; // Jedno řešení
-    }
-
-    // Pokud poslední prvek je nulový, soustava má nekonečně mnoho řešení
-    if (m->prvek[m->radku - 1][m->sloupcu - 1] == 0) {
-        return -1; // Nekonečně mnoho řešení
-    }
-
-    return 0; // Žádné řešení
 }
 
 
@@ -572,20 +348,16 @@ void testMaticePoPrimemChodu(char *jmenoSouboru)
  */
 void gemZpetny(Tmatice *m)
 {
-    // Procházej od posledního řádku k prvnímu
-    for (int radek = m->radku - 1; radek >= 0; --radek) {
-        // Inicializuj proměnnou pro uložení hodnoty
+    for (int radek = m->radku - 1; radek >= 0 ; radek--) {
         float suma = 0.0;
-
-        // Procházej sloupce v aktuálním řádku, kromě posledního
-        for (int sloupec = radek + 1; sloupec < m->sloupcu - 1; ++sloupec) {
-            // Odečti hodnoty neznámých násobené koeficienty z aktuálního řádku
-            suma += m->prvek[radek][sloupec] * m->prvek[sloupec][m->radku];
+        for (int s = radek + 1; s < m->sloupcu -1; s++) {
+            suma += m->prvek[radek][s]* m->prvek[s][m->radek]
         }
 
-        // Vypočítaná hodnota se uloží do posledního sloupce
-        m->prvek[radek][m->sloupcu - 1] = (m->prvek[radek][m->sloupcu - 1] - suma) / m->prvek[radek][radek];
+        m->prvek[radek][m->sloupcu - 1] = (m->prvek[radek][m->sloucpu - 1] - suma) / m->prvek[radek][radek];
     }
+
+
 }
 
 /** \brief Provede zpětný chod GEM na i-tem radku (predpoklada se, ze na dalsich radsich jiz vypocet probehl)
@@ -596,17 +368,6 @@ void gemZpetny(Tmatice *m)
  */
 void gemZpetnyNaRadku(Tmatice *m, int radek)
 {
-    // Inicializuj proměnnou pro uložení hodnoty
-    float suma = 0.0;
-
-    // Procházej sloupce v aktuálním řádku, kromě posledního
-    for (int sloupec = radek + 1; sloupec < m->sloupcu - 1; ++sloupec) {
-        // Odečti hodnoty neznámých násobené koeficienty z aktuálního řádku
-        suma += m->prvek[radek][sloupec] * m->prvek[sloupec][m->radku];
-    }
-
-    // Vypočítaná hodnota se uloží do posledního sloupce
-    m->prvek[radek][m->sloupcu - 1] = (m->prvek[radek][m->sloupcu - 1] - suma) / m->prvek[radek][radek];
 }
 
 
@@ -616,13 +377,10 @@ void gemZpetnyNaRadku(Tmatice *m, int radek)
  *
  * \param m Tmatice* Ukazatel na rozšířenou matici soustavy.
  */
-void gjemZpetny(Tmatice *m)
-{
-    for (int r = m->radku - 1; r >= 0; r--) {
-        m->prvek[r][m->sloupcu - 1] /= m->prvek[r][r];
-    }
-}
 
+    for (int r = 0; r < m->radku; r++) {
+        m->prvek[r][m->sloupcu - 1] = m->prvek[r][m->sloupcu - 1] / m->prvek[r][r];
+    }
 
 /** \brief Tiskne řešení soustavy rovnic, které je uloženo v posledním sloupci rozšířené matice soustavy.
  *
